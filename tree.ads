@@ -5,6 +5,10 @@ with Ada.Containers.Doubly_Linked_Lists;
 
 with Ada.Containers.Generic_Array_Sort;
 
+with Ada.Strings.Fixed;
+use Ada.Strings.Fixed;
+
+with Ada.Characters.Handling;
 
 package Tree is
 
@@ -23,6 +27,15 @@ package Tree is
 	-- Fonction triant les lettres du mot dans l'ordre alphabétique
 	function Tri_Mot(Chaine_Desordonnee : in String) return String;
 
+
+	-- Fonction comptant le nb d'occurrence de la lettre du niveau correspondant en début de chaine
+	-- ordonnee afin de déterminer le pointeur à utiliser dans Trouve_Feuille()
+	function Cpte_Occurrence(Chaine_Ordonnee : in String ; cNiveau : in String) return Natural;
+
+	function CharSUCC(Char : in Character) return Character;
+
+	function Amputer_Chaine(Chaine : in String ; NbOccCharARetirer : in Natural) return String;
+
 	procedure String_Sort is
 		new Ada.Containers.Generic_Array_Sort(Positive,Character,String);
 
@@ -38,7 +51,7 @@ private
 	type Node is
 	record
 		fils		: Tableau_Pointeur := (others => NULL);
-		niveau		: Character := '0'; 
+		niveau		: Character := '`'; -- ` pour la racine 
 		anagrammes	: String_Lists.List;
 	end record;
 
