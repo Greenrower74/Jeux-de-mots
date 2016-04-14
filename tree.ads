@@ -6,6 +6,7 @@ with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Generic_Array_Sort;
 
 with Ada.Strings.Fixed;
+use Ada.Strings.Fixed;
 
 with Ada.Characters.Handling;
 
@@ -32,6 +33,8 @@ package Tree is
 	function Cpte_Occurrence(Chaine_Ordonnee : in String ; cNiveau : in String) return Natural;
 
 	function CharSUCC(Char : in Character) return Character;
+
+	function Amputer_Chaine(Chaine : in String ; NbOccCharARetirer : in Natural) return String;
 
 	procedure String_Sort is
 		new Ada.Containers.Generic_Array_Sort(Positive,Character,String);

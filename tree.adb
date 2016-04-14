@@ -34,10 +34,19 @@ begin -- CharSUCC
 	return RetChar;
 end CharSUCC;
 
+function Amputer_Chaine(Chaine : in String ; NbOccCharARetirer : in Natural) return String is
+	RetChaineAmputee 	: Unbounded_String := To_Unbounded_String(Chaine);
+	Count				: Natural := 0;
+begin -- Amputer_Chaine
+	Count := Chaine'Length - NbOccCharARetirer;
+	Tail(RetChaineAmputee,Count);
+	return To_String(RetChaineAmputee);
+end Amputer_Chaine;
+
 function Trouve_Feuille(T : in Tree ; Chaine_En_Cours : in String) return Tree is
-	RetFeuille	: Tree;
-	sNiveau		: String 	:= "0";
-	NumFils		: Natural	:= 0;
+	sNiveau			: String 	:= "0";
+	Chaine_Suivante : String 	:= "0";
+	NumFils			: Natural	:= 0;
 begin -- Trouve_Feuille
 	-- TODO
 	-- Cas à traiter :
@@ -56,13 +65,14 @@ begin -- Trouve_Feuille
 	sNiveau(1) := CharSUCC(T.niveau);
 	NumFils := Cpte_Occurrence(Chaine_En_Cours,sNiveau);
 
-	if T.fils(NumFils) == null then
-		T.fils(NumFils) := new Node();
+	if ((T.fils(NumFils) = null) and (sNiveau(1) <= 'z')) then
+		T.fils(NumFils) := new Node;
 		T.fils(NumFils).niveau := sNiveau(1);
 	end if;
 
+	Chaine_Suivante := Amputer_Chaine(Chaine_En_Cours,NumFils);
 
-	return Trouve_Feuille(T.fils(NumFils));
+	return Trouve_Feuille(T.fils(NumFils),Chaine_Suivante);
 end Trouve_Feuille;
 
 procedure Insertion(T : in out Tree ; Word : in String) is
@@ -70,7 +80,7 @@ procedure Insertion(T : in out Tree ; Word : in String) is
 	Feuille			: Tree;
 begin -- Insertion
 	Feuille := Trouve_Feuille(T,Chaine_Ordonnee);
-	--Insert(Feuille.anagrammes); --à modifier : mettre les bons paramètres pour que ça
+	Prepend(Feuille.anagrammes,To_Unbounded_String(Word)); --à modifier : mettre les bons paramètres pour que ça
 								  --pour que ça marche. Mais on insère le mot dans la liste
 								  --d'anagrammes
 end Insertion;
