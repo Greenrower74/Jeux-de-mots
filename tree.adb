@@ -15,8 +15,29 @@ begin -- Tri_Mot
 	return RetChaine_Ordonnee;
 end Tri_Mot;
 
+function Cpte_Occurrence(Chaine_Ordonnee : in String ; cNiveau : in String) return Natural is
+	Idx: Natural :=  Ada.Strings.Fixed.Index(Source => Chaine_Ordonnee, Pattern => cNiveau);
+begin -- Cpte_Occurrence
+	if Idx = 0 then
+		return 0;
+    else
+    	return 1 + Cpte_Occurrence(Chaine_Ordonnee(Idx+cNiveau'Length .. Chaine_Ordonnee'Last), cNiveau);
+    end if;
+end Cpte_Occurrence;
+
+function CharSUCC(Char : in Character) return Character is
+	RetChar : Character;
+	Index : Integer;
+begin -- CharSUCC
+	Index := 1 + Character'POS(Char);
+	RetChar := Character'VAL(Index);
+	return RetChar;
+end CharSUCC;
+
 function Trouve_Feuille(T : in Tree ; Chaine_En_Cours : in String) return Tree is
-	RetFeuille : Tree;
+	RetFeuille	: Tree;
+	sNiveau		: String 	:= "0";
+	NumFils		: Natural	:= 0;
 begin -- Trouve_Feuille
 	-- TODO
 	-- Cas à traiter :
@@ -31,7 +52,17 @@ begin -- Trouve_Feuille
 	--		  la chaîne en cours du nombre d'occurrence de la lettre rencontrée.
 	--			-> créer fonction pour compter le nombre d'occurrence
 	--			-> créer fonction pour amputer la chaîne en cours.
-	return null;	
+
+	sNiveau(1) := CharSUCC(T.niveau);
+	NumFils := Cpte_Occurrence(Chaine_En_Cours,sNiveau);
+
+	if T.fils(NumFils) == null then
+		T.fils(NumFils) := new Node();
+		T.fils(NumFils).niveau := sNiveau(1);
+	end if;
+
+
+	return Trouve_Feuille(T.fils(NumFils));
 end Trouve_Feuille;
 
 procedure Insertion(T : in out Tree ; Word : in String) is
