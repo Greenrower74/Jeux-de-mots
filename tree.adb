@@ -62,17 +62,24 @@ begin -- Trouve_Feuille
 	--			-> créer fonction pour compter le nombre d'occurrence
 	--			-> créer fonction pour amputer la chaîne en cours.
 
-	sNiveau(1) := CharSUCC(T.niveau);
-	NumFils := Cpte_Occurrence(Chaine_En_Cours,sNiveau);
+	if (T.Niveau < 'z') then
 
-	if ((T.fils(NumFils) = null) and (sNiveau(1) <= 'z')) then
-		T.fils(NumFils) := new Node;
-		T.fils(NumFils).niveau := sNiveau(1);
+		sNiveau(1) := CharSUCC(T.niveau);
+		NumFils := Cpte_Occurrence(Chaine_En_Cours,sNiveau);
+
+		if (T.fils(NumFils) = null) then
+			T.fils(NumFils) := new Node;
+			T.fils(NumFils).niveau := sNiveau(1);
+		end if;
+
+		return Trouve_Feuille(T.fils(NumFils),Amputer_Chaine(Chaine_EN_Cours,NumFils));--Chaine_Suivante);
+	
+	else
+	
+		return T;
+	
 	end if;
-
-	Chaine_Suivante := Amputer_Chaine(Chaine_En_Cours,NumFils);
-
-	return Trouve_Feuille(T.fils(NumFils),Chaine_Suivante);
+	
 end Trouve_Feuille;
 
 procedure Insertion(T : in out Tree ; Word : in String) is
@@ -80,9 +87,7 @@ procedure Insertion(T : in out Tree ; Word : in String) is
 	Feuille			: Tree;
 begin -- Insertion
 	Feuille := Trouve_Feuille(T,Chaine_Ordonnee);
-	Prepend(Feuille.anagrammes,To_Unbounded_String(Word)); --à modifier : mettre les bons paramètres pour que ça
-								  --pour que ça marche. Mais on insère le mot dans la liste
-								  --d'anagrammes
+	Prepend(Feuille.anagrammes,To_Unbounded_String(Word));
 end Insertion;
 
 procedure Search_And_Display(T: in Tree ; Letters : in String) is
