@@ -1,3 +1,6 @@
+with Ada.Strings.Maps.Constants;
+with Ada.Strings.Fixed;
+with Ada.Text_IO;
 
 package body Tree is
 
@@ -62,24 +65,17 @@ begin -- Trouve_Feuille
 	--			-> créer fonction pour compter le nombre d'occurrence
 	--			-> créer fonction pour amputer la chaîne en cours.
 
-	if (T.Niveau < 'z') then
+	sNiveau(1) := CharSUCC(T.niveau);
+	NumFils := Cpte_Occurrence(Chaine_En_Cours,sNiveau);
 
-		sNiveau(1) := CharSUCC(T.niveau);
-		NumFils := Cpte_Occurrence(Chaine_En_Cours,sNiveau);
-
-		if (T.fils(NumFils) = null) then
-			T.fils(NumFils) := new Node;
-			T.fils(NumFils).niveau := sNiveau(1);
-		end if;
-
-		return Trouve_Feuille(T.fils(NumFils),Amputer_Chaine(Chaine_EN_Cours,NumFils));--Chaine_Suivante);
-	
-	else
-	
-		return T;
-	
+	if ((T.fils(NumFils) = null) and (sNiveau(1) <= 'z')) then
+		T.fils(NumFils) := new Node;
+		T.fils(NumFils).niveau := sNiveau(1);
 	end if;
-	
+
+	Chaine_Suivante := Amputer_Chaine(Chaine_En_Cours,NumFils);
+
+	return Trouve_Feuille(T.fils(NumFils),Chaine_Suivante);
 end Trouve_Feuille;
 
 procedure Insertion(T : in out Tree ; Word : in String) is
@@ -87,36 +83,44 @@ procedure Insertion(T : in out Tree ; Word : in String) is
 	Feuille			: Tree;
 begin -- Insertion
 	Feuille := Trouve_Feuille(T,Chaine_Ordonnee);
-	Prepend(Feuille.anagrammes,To_Unbounded_String(Word));
+	Prepend(Feuille.anagrammes,To_Unbounded_String(Word)); --à modifier : mettre les bons paramètres pour que ça
+								  --pour que ça marche. Mais on insère le mot dans la liste
+								  --d'anagrammes
 end Insertion;
 
 procedure Search_And_Display(T: in Tree ; Letters : in String) is
+	--Modify the Input string to lower case as "b" != "B"
+	Input 	: String := Ada.Strings.Fixed.Translate(Letters, Ada.Strings.Maps.Constants.Lower_Case_Map);
+	Character_Occurences : Natural := 0;
+	Char_to_String : String(1..1); --needed for a char to string conversation for the Cpte_Occurence function
+	C : String_Lists.Cursor;
 begin -- Search_And_Display
-	-- TODO
-	null;
+
+	if (T.niveau < '{') then -- '{' is successive character of 'z', i.e. Node with { is niveau 27
+
+		Char_to_String(1) := T.niveau; --char to string
+		Character_Occurences := Cpte_Occurrence(Letters,Char_to_String);
+
+		--iterate over every node node with constraints of the occurence of the character in the Input
+		While_Loop :
+		while Character_Occurences > 1 loop
+			if T.fils(Character_Occurences) /= null then -- /= null valid?
+				Search_And_Display(T.fils(Character_Occurences), Letters);
+			end if;
+
+			Character_Occurences := Character_Occurences - 1;
+		end loop While_Loop;
+
+	-- niveau after 'z' = '{' = 27 - the node of the current this Tree T contains the words in anagrammes
+	else 
+		C := First(T.anagrammes);
+		While Has_Element (C) loop
+			Ada.Text_IO.Put_Line( To_Unbounded_String(Element (C)));
+			Ada.Text_IO.Put_Line("found word");
+			Next(C);
+		end loop;
+	end if;
+
 end Search_And_Display;
 
 end Tree;
-
---	TODO:
-
--- Insertion :
--- 	1) Tri_Mot() : 	fonction prenant en entrée le mot à ranger dans l'arbre.
---					Elle trie les lettres dans l'ordre alphabétique pour
---					permettre de le ranger plus facilement.
---
---	2) Trouve_Feuille() :	Fonction récursive. Elle prend en entrée un pointeur
---							sur l'arbre en cour ainsi que le mot en cours. Ensuite
---							à chaque appel elle crée le noeud correspondant à la
---							première lettre du mot reçu, ie elle reçoit aacol. Elle
---							créera le noeud 2A car il y a deux a (d'où l'utilité de
---							Tri_Mot()) ou si il existe déjà elle se dirige dessus.
---							Ensuite à l'appel suivant elle a col. La première lettre
---							est un c or il faut créer la case 0B. Donc on compare la
---							première lettre avec la lettre correspondant au niveau où
---							on se trouve dans l'arbre. Et ainsi de suite.							
---
--- Search_And_Display!
---	1) reprendre ou adapter fonction du 1) précédent pour calculer un chemin
---
---	2) faire fonction pour afficher tous les anagrammes de la liste

@@ -1,14 +1,12 @@
 with Ada.Strings.Unbounded;
 use Ada.Strings.Unbounded;
 
-with Ada.TEXT_IO, Ada.INTEGER_TEXT_IO;
-use Ada.TEXT_IO, Ada.INTEGER_TEXT_IO;
-
 with Ada.Containers.Doubly_Linked_Lists;
 
 with Ada.Containers.Generic_Array_Sort;
 
 with Ada.Strings.Fixed;
+use Ada.Strings.Fixed;
 
 with Ada.Characters.Handling;
 
@@ -49,7 +47,8 @@ private
 
 	type Node;
 	type Tree is access Node;
-	type Tableau_Pointeur is array(0..10) of Tree;
+	--is 10 the maximal number of the same character appearing in one word?
+	type Tableau_Pointeur is array(0..10) of Tree; 
 	type Node is
 	record
 		fils		: Tableau_Pointeur := (others => NULL);

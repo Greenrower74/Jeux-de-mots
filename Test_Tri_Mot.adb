@@ -5,9 +5,11 @@ with Ada.TEXT_IO, Ada.INTEGER_TEXT_IO;
 use Ada.TEXT_IO, Ada.INTEGER_TEXT_IO;
 
 procedure Test_Tri_Mot is
-	Mot 	: String	:= "hbdilyotphjbjbffwb";
+	--Mot 	: String	:= "hbdilyotphjbjbffwb";
+	Mot 	: String	:= "hbdilyotphjbjbffwB";
 	NbOcc	: Natural	:= 0;
-	Char	: Character	:= '`';
+	--Char	: Character	:= '`';
+	Char	: Character	:= 'z';
 	Chaine	: String	:= "0";
 begin -- Test_Tri_Mot
 	-- Essai de l'inversion des caractères
