@@ -1,12 +1,14 @@
 with Ada.Strings.Unbounded;
 use Ada.Strings.Unbounded;
 
+with Ada.TEXT_IO, Ada.INTEGER_TEXT_IO;
+use Ada.TEXT_IO, Ada.INTEGER_TEXT_IO;
+
 with Ada.Containers.Doubly_Linked_Lists;
 
 with Ada.Containers.Generic_Array_Sort;
 
 with Ada.Strings.Fixed;
-use Ada.Strings.Fixed;
 
 with Ada.Characters.Handling;
 
